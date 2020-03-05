@@ -26,10 +26,8 @@ public class MashupWS {
      * The implemented ratelimiters make it possible do service many requests to the webservice
      * without exceeding the request rate limits set by the consumed APIs
      * mbRateLimiter controls number of questions per second to MusicBrainz, set to 1/s
-     * caaRateLimiter controls number of questions per second to MusicBrainz cover art archive set to 1/s
      */
     RateLimiter mbRateLimiter = RateLimiter.create(1);
-    RateLimiter caaRateLimiter = RateLimiter.create(1);
 
     /**
      * Spring Rest service returning a information about a artist/group from MusicBrainz, Wikipedia and Cover Art archive
@@ -137,7 +135,6 @@ public class MashupWS {
      */
     private void ExtractCoverArtArchiveAPI(WsResponse response) {
         for (Album a : response.getAlbums()) {
-            caaRateLimiter.acquire(1);
             Runnable extractCA = () -> {
                 JSONObject caaJsonObject = GetJsonFromApi("http://coverartarchive.org/release-group/" + a.getId());
                 if (caaJsonObject != null) {
